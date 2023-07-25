@@ -7,3 +7,8 @@
         state: present
         update_cache: true
       become: true
+    - name: Start QEMU Guest Agent
+      ansible.builtin.systemd:
+        state: started
+        name: qemu-guest-agent
+      become: true
