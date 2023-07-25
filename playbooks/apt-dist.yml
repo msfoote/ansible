@@ -1,6 +1,6 @@
 - hosts: "ubuntu"
   becmome: yes
-tasks:
+  tasks:
     - name: apt
       apt:
         update_cache: yes
