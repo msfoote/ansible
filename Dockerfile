@@ -1,3 +1,3 @@
 From semaphoreui/semaphore:latest
 
-RUN apt-get update && apt-get install -y python3-winrm
+RUN pip install "pywinrm>=0.3.0"
