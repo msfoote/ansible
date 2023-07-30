@@ -1,7 +1,7 @@
 - name: install latest qemu-guest-agent
   hosts: "ubuntu"
   tasks:
-    - name: install qemu-guest-agent
+    - name: Install qemu-guest-agent
       apt:
         name: qemu-guest-agent
         state: present

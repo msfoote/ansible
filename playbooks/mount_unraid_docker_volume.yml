@@ -1,0 +1,54 @@
+# Adapted from https://www.ansiblepilot.com/articles/mount-a-windows-share-in-linux-smb-or-cifs-ansible-module-mount/
+- name: Mount the Unraid Docker Volume Share
+  hosts: ubuntu
+  become: true
+  vars:
+    uri: "//192.168.1.100/vm-docker-data"
+    username: "nobody"
+    password: "none"
+    mountpoint: "/mnt/docker"
+  tasks:
+    - name: Ensure cifs-utils installed
+      ansible.builtin.package:
+        name: cifs-utils
+        state: present
+    - name: Ensure {{ mountpoint }} exists
+      ansible.builtin.file:
+        path: "{{ mountpoint }}"
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+    - name: Mount network share
+      ansible.posix.mount:
+        src: "{{ uri }}"
+        path: "{{ mountpoint }}"
+        fstype: cifs
+        opts: 'username={{ username }},password={{ password }}'
+        state: mounted
+    - name: Create folder for ansible_hostname
+      ansible.builtin.file:
+        path: "{{ mountpoint + '/' + ansible_hostname }}"
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+    # - name: Create docker volume directory
+    #   ansible.builtin.file:
+    #     path: "/var/lib/docker"
+    #     state: directory
+    #     mode: '0755'
+    #     owner: root
+    #     group: root
+    # - name: Remove Volumes subdirectory if exists
+    #   ansible.builtin.file:
+    #     path: "/var/lib/docker/volumes"
+    #     state: absent
+    # - name: Create a symbolic link to unraid path
+    #   ansible.builtin.file:
+    #     src: "/var/lib/docker/volumes"
+    #     dest: "{{ mountpoint + '/' + ansible_hostname + '/'}}"
+    #     owner: root
+    #     group: root
+    #     state: link
+    #     force: true

@@ -1,5 +1,5 @@
 - name: Install Docker engine
-  hosts: "192.168.1.92"
+  hosts: "ubuntu"
   become: true
   tasks:
   - name: install dependencies
