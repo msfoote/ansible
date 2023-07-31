@@ -2,6 +2,7 @@ Windows:
 	- Rename Computer
 	- Update Windows
 	- Update Optional Windows Updates
+	- Add a printer
 
 MS Edge:
 	- Login to MS Edge
@@ -37,6 +38,10 @@ Install via choco:
 		- wiztree
 		- wireguard
 		- rdmfree (Try?)
+
+		Visual Studio Redistributables? vcredist-all
+		DirectX? directx
+		TeraCopy? TeraCopy
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
