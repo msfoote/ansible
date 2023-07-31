@@ -1,16 +1,16 @@
-Set display setting appropriately
+Windows:
+	- Rename Computer
+	- Update Windows
+	- Update Optional Windows Updates
 
-Rename Computer
+MS Edge:
+	- Login to MS Edge
+	- Login to plugins
 
-Update Windows
-Update Optional Windows Updates
-
-Login to MS Edge and update plugins
-
-Install Chocolatey
+Install Chocolatey:
 	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-Install via choco
+Install via choco:
 	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree -y
 		- geforce-game-ready-driver
 		- notepadplusplus
@@ -37,11 +37,43 @@ Install via choco
 		- wireguard
 		- rdmfree (Try?)
 
-Open and log into Nextcloud client
+Nextcloud Client:
+	- Open and log into Nextcloud client
 
-Enable viewing of hidden files in File Explorer
 
-Change to Dark Mode
+File Explorer:
+	- Enable viewing of hidden files in File Explorer
+	- Enable network discovery
+	- Pin //FOOTEPRINT to Quick Access Bar
+	
+
+Windows Personalization:
+	- Change to Dark Mode
+	- Set display setting appropriately
 
 VSCode:
-	- Enable autosaving
+	- Enable autosavingNo 10 Forward
+
+Steam:
+	- Log into steam using Steamguard on Phone
+	- Download Games
+
+Phone Link:
+	- Add my phone
+
+Pin Apps to Taskbar:
+	- Steam
+	- Phone Link
+	- Cheathappens Auroroa
+
+SSH:
+	- Create SSH Kepair and send to other PCs
+	- 
+
+Remote Desktop Settings: Enable
+
+Software Installs:
+	- Cheathappens - Aurora: https://www.cheathappens.com/
+	- PDF-XChange Editor Plus:
+		- Check for new versions
+		- Save new version and install from: \\FOOTEPRINT\Software\Utilities\PDF-XChange.Editor.Plus.v8.0.343.0
