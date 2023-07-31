@@ -1,0 +1,29 @@
+Set display setting appropriately
+
+Rename Computer
+
+Update Windows
+
+Install Chocolatey
+	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+Install via choco
+	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec -y
+		- geforce-game-ready-driver
+		- notepadplusplus
+		- 7zip
+		- microsoft-office-deployment
+		- discord
+		- steam
+		- vscode
+		- vscode-ansible
+		- vscode-docker
+		- vscode-gitlens
+		- vscode-markdown-all-in-one
+		- vscode-python
+		- vscode-remote-ssh
+		- vscode-yaml
+		- nextcloud-client
+		- greenshot
+		- parsec
+		
