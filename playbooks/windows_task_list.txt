@@ -3,6 +3,7 @@ Set display setting appropriately
 Rename Computer
 
 Update Windows
+Update Optional Windows Updates
 
 Login to MS Edge and update plugins
 
