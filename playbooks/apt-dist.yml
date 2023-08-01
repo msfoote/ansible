@@ -1,4 +1,4 @@
-- hosts: "ubuntu"
+- hosts: "ubuntu_based"
   become: yes
   tasks:
     - name: apt
