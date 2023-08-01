@@ -42,6 +42,8 @@ Install via choco:
 		Visual Studio Redistributables? vcredist-all
 		DirectX? directx
 		TeraCopy? TeraCopy
+		PowerShell
+		dotnet
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
