@@ -13,7 +13,7 @@ Install Chocolatey:
 	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Install via choco:
-	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey -y
+	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey nano -y
 		- geforce-game-ready-driver
 		- notepadplusplus
 		- 7zip
@@ -44,6 +44,7 @@ Install via choco:
 		- dotnet
 		- AdobeReader
 		- Autohotkey
+		- nano
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
@@ -90,7 +91,8 @@ Pin Apps to Taskbar:
 
 SSH:
 	- Create SSH Kepair and send to other PCs
-	- 
+	- Or copy existing SSH Keys to C:\Users\matthew\.ssh
+		- Taken from [https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git](https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git)
 
 Remote Desktop Settings: Enable
 
