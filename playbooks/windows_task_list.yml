@@ -13,7 +13,7 @@ Install Chocolatey:
 	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Install via choco:
-	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree -y
+	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey -y
 		- geforce-game-ready-driver
 		- notepadplusplus
 		- 7zip
@@ -38,29 +38,43 @@ Install via choco:
 		- wiztree
 		- wireguard
 		- rdmfree (Try?)
-
-		Visual Studio Redistributables? vcredist-all
-		DirectX? directx
-		TeraCopy? TeraCopy
-		PowerShell
-		dotnet
+		- vcredist-all
+		- directx
+		- PowerShell
+		- dotnet
+		- AdobeReader
+		- Autohotkey
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
+
+Git
+	- Configure identity
+		git config --global user.email "matthew.foote@gmail.com"
+		git config --global user.name "Matthew Foote"
+
+Autohotkey
+	- Git Clone Autohotkey repository
+		git clone https://github.com/msfoote/autohotkey.git
+	- Enter `shell:startup` into the Run prompt (WIN + R)
+	- Copy link of Script to new folder
 
 
 File Explorer:
 	- Enable viewing of hidden files in File Explorer
 	- Enable network discovery
 	- Pin //FOOTEPRINT to Quick Access Bar
+	- Unhide extensions for known file types
 	
+winscp
+	- Show hidden files
 
 Windows Personalization:
 	- Change to Dark Mode
 	- Set display setting appropriately
 
 VSCode:
-	- Enable autosavingNo 10 Forward
+	- Enable autosaving
 
 Steam:
 	- Log into steam using Steamguard on Phone
