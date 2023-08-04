@@ -1,0 +1,8 @@
+- hosts: ubuntu_based
+  remote_user: msfoote
+  gather_facts: true
+
+  tasks:
+  - name: Print all available facts
+    ansible.builtin.debug:
+      var: ansible_facts

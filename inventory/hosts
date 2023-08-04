@@ -12,8 +12,8 @@ Moms_PC ansible_host=192.168.1.87
 Docker ansible_host=192.168.1.92
 
 [windows]
-#Win11-VM ansible_host=192.168.1.98
-Win11-VM ansible_host=192.168.1.99
+#Win10-VM ansible_host=192.168.1.99
+Win11-VM ansible_host=192.168.1.98
 Tower ansible_host=192.168.1.195
 
 [windows:vars]

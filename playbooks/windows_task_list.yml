@@ -79,6 +79,10 @@ Windows Personalization:
 	- Change to Dark Mode
 	- Set display setting appropriately
 
+discord
+	- Set to start at startup
+	- Set to start minimized
+
 VSCode:
 	- Enable autosaving
 
