@@ -3,6 +3,7 @@ Windows:
 	- Update Windows
 	- Update Optional Windows Updates
 	- Add a printer
+	- Run autologon (after chocolatey base.config install)
 
 MS Edge:
 	- Login to MS Edge
@@ -13,43 +14,12 @@ Install Chocolatey:
 	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Install via choco:
-	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey nano ssh-copy-id -y
-		- geforce-game-ready-driver
-		- notepadplusplus
-		- 7zip
-		- microsoft-office-deployment
-		- discord
-		- steam
-		- vscode
-		- vscode-ansible
-		- vscode-docker
-		- vscode-gitlens
-		- vscode-markdown-all-in-one
-		- vscode-python
-		- vscode-remote-ssh
-		- vscode-yaml
-		- nextcloud-client
-		- greenshot
-		- parsec
-		- putty
-		- autoruns
-		- vlc
-		- winscp
-		- wiztree
-		- wireguard
-		- rdmfree (Try?)
-		- vcredist-all
-		- directx
-		- PowerShell
-		- dotnet
-		- AdobeReader
-		- Autohotkey
-		- nano
-		- iMazing
-		- ssh-copy-id
-		- openssh
-			choco install --package-parameters=/SSHServerFeature openssh -y
-
+	- Baseline
+  		choco install base.config -y
+	- Gaming
+  		choco install gaming.config -y
+	- iOS Backups
+  		choco install ios_backup.config -y
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
@@ -71,7 +41,10 @@ File Explorer:
 	- Enable network discovery
 	- Pin //FOOTEPRINT to Quick Access Bar
 	- Unhide extensions for known file types
-	
+
+f.lux
+	- Configure location
+
 winscp
 	- Show hidden files
 
