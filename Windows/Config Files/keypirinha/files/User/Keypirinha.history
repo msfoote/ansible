@@ -1,0 +1,200 @@
+{
+   ".header" : {
+      "creator" : "Keypirinha v2.26 (e037f62)",
+      "creator_url" : "http://keypirinha.com/",
+      "format" : 102,
+      "modified" : "2023-08-04T21:54:28-0700",
+      "type" : "history"
+   },
+   "history" : [
+      {
+         "action" : null,
+         "item" : 8712861614632318774,
+         "label" : "keypirinha.exe",
+         "time" : "2023-08-04T19:20:53-0700"
+      },
+      {
+         "action" : null,
+         "item" : 7544475573990267934,
+         "label" : "Keypirinha: Configure",
+         "time" : "2023-08-04T21:36:29-0700"
+      },
+      {
+         "action" : null,
+         "item" : 991816144462828766,
+         "label" : ".",
+         "time" : "2023-08-04T21:39:16-0700"
+      },
+      {
+         "action" : null,
+         "item" : 17712792392785528363,
+         "label" : "System Configuration",
+         "time" : "2023-08-04T21:43:46-0700"
+      },
+      {
+         "action" : null,
+         "item" : 4419923114050936031,
+         "label" : "Keypirinha: Configure Package: Bookmarks",
+         "time" : "2023-08-04T21:44:15-0700"
+      },
+      {
+         "action" : null,
+         "item" : 5116956865470095428,
+         "label" : "Everything",
+         "time" : "2023-08-04T21:46:06-0700"
+      },
+      {
+         "action" : null,
+         "item" : 15287167799042211874,
+         "label" : "Steam",
+         "time" : "2023-08-04T21:47:03-0700"
+      },
+      {
+         "action" : null,
+         "item" : 7544475573990267934,
+         "label" : "Keypirinha: Configure",
+         "time" : "2023-08-04T21:47:39-0700"
+      },
+      {
+         "action" : null,
+         "item" : 7544475573990267934,
+         "label" : "Keypirinha: Configure",
+         "time" : "2023-08-04T21:49:00-0700"
+      },
+      {
+         "action" : null,
+         "item" : 7544475573990267934,
+         "label" : "Keypirinha: Configure",
+         "time" : "2023-08-04T21:53:38-0700"
+      },
+      {
+         "action" : null,
+         "item" : 3088017915396551100,
+         "label" : "C:\\Users\\matthew\\AppData\\Roaming",
+         "time" : "2023-08-04T21:54:28-0700"
+      }
+   ],
+   "sets" : {
+      "actions" : [],
+      "items" : [
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 991816144462828766,
+            "label" : ".",
+            "loop_on_suggest" : true,
+            "plugin" : "FileBrowser.FileBrowser",
+            "short_desc" : "",
+            "target" : "C:\\Users\\matthew"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 3088017915396551100,
+            "label" : "C:\\Users\\matthew\\AppData\\Roaming",
+            "loop_on_suggest" : true,
+            "plugin" : "FileBrowser.FileBrowser",
+            "short_desc" : "",
+            "target" : "C:\\Users\\matthew\\AppData\\Roaming"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 5116956865470095428,
+            "label" : "Everything",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.Desktop",
+            "short_desc" : "Desktop: Desktop",
+            "target" : "C:\\Users\\Public\\Desktop\\Everything.lnk"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 8712861614632318774,
+            "label" : "keypirinha.exe",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.EnvPath",
+            "short_desc" : "",
+            "target" : "C:\\ProgramData\\chocolatey\\bin\\keypirinha.exe"
+         },
+         {
+            "args_hint" : "forbidden",
+            "category" : "keyword",
+            "hit_hint" : "noargs",
+            "id" : 7544475573990267934,
+            "label" : "Keypirinha: Configure",
+            "loop_on_suggest" : false,
+            "plugin" : "Internal.About",
+            "short_desc" : "Edit Keypirinha's configuration file(s)",
+            "target" : "app_config"
+         },
+         {
+            "args_hint" : "forbidden",
+            "category" : "reference",
+            "hit_hint" : "noargs",
+            "id" : 4419923114050936031,
+            "label" : "Keypirinha: Configure Package: Bookmarks",
+            "loop_on_suggest" : false,
+            "plugin" : "Internal.About",
+            "short_desc" : "Configure Package \"Bookmarks\"",
+            "target" : "pack_config Bookmarks"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 15287167799042211874,
+            "label" : "Steam",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.Desktop",
+            "short_desc" : "Desktop: Desktop",
+            "target" : "C:\\Users\\Public\\Desktop\\Steam.lnk"
+         },
+         {
+            "args_hint" : "accepted",
+            "category" : "file",
+            "hit_hint" : "keepall",
+            "id" : 17712792392785528363,
+            "label" : "System Configuration",
+            "loop_on_suggest" : false,
+            "plugin" : "Apps.StartMenu",
+            "short_desc" : "Start Menu: Programs\\Administrative Tools",
+            "target" : "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Administrative Tools\\System Configuration.lnk"
+         }
+      ],
+      "terms" : [
+         {
+            "items" : [ 3088017915396551100 ],
+            "search" : "%appdata%"
+         },
+         {
+            "items" : [ 7544475573990267934 ],
+            "search" : "conf"
+         },
+         {
+            "items" : [ 7544475573990267934, 4419923114050936031 ],
+            "search" : "config"
+         },
+         {
+            "items" : [ 17712792392785528363 ],
+            "search" : "configu"
+         },
+         {
+            "items" : [ 5116956865470095428 ],
+            "search" : "everything"
+         },
+         {
+            "items" : [ 7544475573990267934, 8712861614632318774 ],
+            "search" : "keyp"
+         },
+         {
+            "items" : [ 15287167799042211874 ],
+            "search" : "stea"
+         }
+      ]
+   }
+}
