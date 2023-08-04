@@ -13,7 +13,7 @@ Install Chocolatey:
 	- Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Install via choco:
-	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey nano -y
+	- choco install geforce-game-ready-driver geforce-game-ready-driver notepadplusplus 7zip microsoft-office-deployment discord steam vscode vscode-ansible vscode-docker vscode-gitlens vscode-markdown-all-in-one vscode-python vscode-remote-ssh vscode-yaml nextcloud-client greenshot parsec putty autoruns vlc winscp wiztree wireguard rdmfree vcredist-all directx PowerShell dotnet AdobeReader autohotkey nano ssh-copy-id -y
 		- geforce-game-ready-driver
 		- notepadplusplus
 		- 7zip
@@ -45,6 +45,11 @@ Install via choco:
 		- AdobeReader
 		- Autohotkey
 		- nano
+		- iMazing
+		- ssh-copy-id
+		- openssh
+			choco install --package-parameters=/SSHServerFeature openssh -y
+
 
 Nextcloud Client:
 	- Open and log into Nextcloud client
@@ -91,7 +96,7 @@ Pin Apps to Taskbar:
 
 SSH:
 	- Create SSH Kepair and send to other PCs
-	- Or copy existing SSH Keys to C:\Users\matthew\.ssh
+	- Or copy existing SSH Keys to C:\Users\matthew\.ssh and C:\ProgramData\.ssh
 		- Taken from [https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git](https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git)
 
 Remote Desktop Settings: Enable
@@ -110,7 +115,7 @@ Software Installs:
       - \\192.168.1.100\Software\Utilities\Fujitsu ScanSnap S1500M Software
       - Ensure Device is mapped to VM
     - iMazing:
-      - https://imazing.com/
+      - Enter License number
       - Ensure USBs routed to VM
     - Brother QL-570
       - https://support.brother.com/g/b/downloadtop.aspx?c=us&lang=en&prod=lpql570eus
