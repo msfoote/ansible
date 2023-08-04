@@ -45,6 +45,9 @@ File Explorer:
 f.lux
 	- Configure location
 
+keypirinha
+	- Copy config files to %APPDATA%\Roaming\Keypirinha\
+
 winscp
 	- Show hidden files
 
