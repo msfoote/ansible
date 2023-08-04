@@ -13,3 +13,9 @@
 [windows]
 192.168.1.98
 192.168.1.99
+192.168.1.195
+
+[windows:vars]
+ansible_connection=ssh
+ansible_user=matthew
+ansible_shell_type=cmd
