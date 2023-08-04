@@ -1,19 +1,20 @@
 [ubuntu]
-192.168.1.91
-192.168.1.92
+Ansible-Host ansible_host=192.168.1.91
+Docker ansible_host=192.168.1.92
 
 [ubuntu_based]
-192.168.1.91
-192.168.1.92
-192.168.1.95
+Ansible-Host ansible_host=192.168.1.91
+Docker ansible_host=192.168.1.92
+MX_Linux ansible_host=192.168.1.95
+Moms_PC ansible_host=192.168.1.87
 
 [docker]
-192.168.1.92
+Docker ansible_host=192.168.1.92
 
 [windows]
-192.168.1.98
-192.168.1.99
-192.168.1.195
+#Win11-VM ansible_host=192.168.1.98
+Win11-VM ansible_host=192.168.1.99
+Tower ansible_host=192.168.1.195
 
 [windows:vars]
 ansible_connection=ssh
