@@ -1,4 +1,4 @@
-- hosts: windows
+- hosts: windows_test
   remote_user: matthew
   gather_facts: true
 
