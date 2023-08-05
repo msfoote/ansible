@@ -20,3 +20,11 @@ Tower ansible_host=192.168.1.195
 ansible_connection=ssh
 ansible_user=matthew
 ansible_shell_type=cmd
+
+[windows_test]
+VM ansible_host=192.168.1.198
+
+[windows_test:vars]
+ansible_connection=ssh
+ansible_user=matthew
+ansible_shell_type=cmd
