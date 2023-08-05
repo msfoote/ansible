@@ -99,7 +99,7 @@ You will then be presented with your desktop.
 
 ### Final Virtual Machine Configuration
 
-If you are working on a bare metal machine proceed to [Setup the PC](#setup-the-pc)
+If you are working on a bare metal machine proceed to [Setup the PC](#setup-the-pc-for-external-control)
 
 Open up File Explorer and navigate to the CD Drive named `virtio-win-xx`
 
