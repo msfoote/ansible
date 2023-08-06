@@ -3,6 +3,11 @@
   gather_facts: true
 
   tasks:
+  - name: Install PSWindowsUpdate if note installed
+    win_chocolatey:
+      name: PSWindowsUpdate
+      state: latest
+
   - name: Install all updates and reboot as many times as needed
     ansible.windows.win_updates:
       category_names: '*'
@@ -10,3 +15,4 @@
       reboot: true
       reboot_timeout: 10000
 
+#Currently not doing anything that I can see. Need to debug
