@@ -3,7 +3,7 @@
   gather_facts: true
 
   tasks:
-  - name: Update cholatey installations
+  - name: Update chocolatey installations
     win_chocolatey:
       name: all
       state: latest
