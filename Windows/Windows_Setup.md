@@ -145,4 +145,21 @@ The data that is reflected on the line beginning with `IPv4 Address` is what we 
 IPv4 Address.  .  .  .  .  .  .  .  .  :  192.168.1.XXX
 ```
 
+The very last thing that needs to be done is a file needs to be created with the contents of the public SSH key we will use to control it.
+
+The file is located at `C:\ProgramData\ssh\administrators_authorized_keys`
+
+You can use the following commands to transfer the key from a master windows system to your new system.
+
+```PowerShell
+# Get the public key file generated previously on your client
+$authorizedKey = Get-Content -Path $env:USERPROFILE\.ssh\id_rsa.pub
+
+# Generate the PowerShell to be run remote that will copy the public key file generated previously on your client to the authorized_keys file on your server
+$remotePowershell = "powershell Add-Content -Force -Path $env:ProgramData\ssh\administrators_authorized_keys -Value '$authorizedKey';icacls.exe ""$env:ProgramData\ssh\administrators_authorized_keys"" /inheritance:r /grant ""Administrators:F"" /grant ""SYSTEM:F"""
+
+# Connect to your server and run the PowerShell using the $remotePowerShell variable
+ssh username@ipaddress $remotePowershell
+```
+
 From here we can move to our Ansible machine to finish configuration.
