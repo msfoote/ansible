@@ -11,7 +11,7 @@
   - name: Install all updates and reboot as many times as needed
     ansible.windows.win_updates:
       category_names: '*'
-      state: installed
+      #state: installed
       reboot: true
       reboot_timeout: 10000
 
