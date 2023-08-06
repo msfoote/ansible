@@ -1,20 +1,25 @@
+# Linux Setup
+
+## Something
+
 ### Static IP Address
+
 Setup a static ip address after completing installation. Instructions taken from [this blog post](https://linuxize.com/post/how-to-configure-static-ip-address-on-ubuntu-18-04/). The instructions are Ubuntu Server specific.
 
-1. Log into the terminal of the specified machine
-2. Find the network interface you want a static ip set
+Log into the terminal of the specified machine
+Find the network interface you want a static ip set
 
 ```bash
 ip link
 ```
 
-3. Edit the `Netplan` configuration file `/etc/netplan/*.yaml`
+Edit the `Netplan` configuration file `/etc/netplan/*.yaml`
 
 ```bash
 sudo nano /etc/netplan/00-installer-config.yaml
 ```
 
-4. Revise the following text replacing any field designated as field_name
+Revise the following text replacing any field designated as field_name
 
 ```yml
 network:
@@ -33,13 +38,13 @@ network:
     version: 2
 ```
 
-5. Apply the changes
+Apply the changes
 
 ```bash
 sudo netplan apply
 ```
 
-6. You may be booted from the server while the changes occur.
+You may be booted from the server while the changes occur.
 
 ### Resize LVM - Taken from [https://technotim.live/posts/fist-13-things-linux/#fix-lvm](https://technotim.live/posts/fist-13-things-linux/#fix-lvm)
 
