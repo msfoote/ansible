@@ -1,17 +1,26 @@
+X Install Chocolatey:
+  - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+X SSH:
+  - Create SSH Kepair and send to other PCs
+  - Or copy existing SSH Keys to C:\Users\matthew\.ssh and C:\ProgramData\.ssh
+    - Taken from [https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git](https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git)
+
 Windows:
-  - Rename Computer
+  - X Rename Computer
   - Update Windows
   - Update Optional Windows Updates
   - Add a printer
   - Run autologon (after chocolatey base.config install)
 
+Windows Personalization:
+  - Change to Dark Mode
+  - Set display setting appropriately
+
 MS Edge:
   - Login to MS Edge
   - Login to plugins
   - Change default search engine to google
-
-Install Chocolatey:
-  - Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 Install via choco:
   - Baseline
@@ -51,10 +60,6 @@ keypirinha
 winscp
   - Show hidden files
 
-Windows Personalization:
-  - Change to Dark Mode
-  - Set display setting appropriately
-
 discord
   - Set to start at startup
   - Set to start minimized
@@ -73,11 +78,6 @@ Pin Apps to Taskbar:
   - Steam
   - Phone Link
   - Cheathappens Auroroa
-
-SSH:
-  - Create SSH Kepair and send to other PCs
-  - Or copy existing SSH Keys to C:\Users\matthew\.ssh and C:\ProgramData\.ssh
-    - Taken from [https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git](https://sbytestream.pythonanywhere.com/blog/Import-ssh-keys-for-Git)
 
 Remote Desktop Settings: Enable
 
