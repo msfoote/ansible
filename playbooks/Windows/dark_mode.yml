@@ -1,0 +1,16 @@
+- hosts: windows_test
+  remote_user: matthew
+  gather_facts: true
+
+  tasks:
+  - name: Swap to Windows Dark Mode
+    ansible.windows.win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+      name: AppsUseLightTheme
+      data: 0
+  
+  - name: Swap to Application Dark Mode
+    ansible.windows.win_regedit:
+      path: HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
+      name: SystemUsesLightTheme
+      data: 0
