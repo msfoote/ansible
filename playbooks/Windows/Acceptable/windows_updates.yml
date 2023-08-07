@@ -1,6 +1,6 @@
 - hosts: windows_test
   remote_user: matthew
-  gather_facts: true
+  gather_facts: false
 
   tasks:
   - name: Install PSWindowsUpdate if note installed
@@ -10,9 +10,5 @@
 
   - name: Install all updates and reboot as many times as needed
     ansible.windows.win_updates:
-      category_names: '*'
-      #state: installed
       reboot: true
       reboot_timeout: 10000
-
-#Currently not doing anything that I can see. Need to debug
