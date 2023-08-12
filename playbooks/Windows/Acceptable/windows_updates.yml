@@ -1,9 +1,9 @@
-- hosts: windows_test
+- hosts: windows
   remote_user: matthew
   gather_facts: false
 
   tasks:
-  - name: Install PSWindowsUpdate if note installed
+  - name: Install PSWindowsUpdate if not installed
     win_chocolatey:
       name: PSWindowsUpdate
       state: latest
