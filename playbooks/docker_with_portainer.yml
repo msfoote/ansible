@@ -1,5 +1,5 @@
 # Adapted from https://dmarko.tcl-digitrade.com/post/2021/ansible-docker-with-portainer/#:~:text=Steps%20we%20have%20to%20do%20using%20Ansible%20install,have%20%E2%80%98hosts%E2%80%99%20available%29%3A%20ansible-playbook%20docker.yml%20-i.%2Fhosts%20--ask-pass%20--ask-become-pass
-- hosts: "192.168.1.92"
+- hosts: docker
   user: msfoote
   become: yes
   vars:
@@ -66,14 +66,6 @@
     - name: Install python packages
       pip:
         name: docker
-    
-    - name: Ensure {{ mountpoint }} exists
-      ansible.builtin.file:
-        path: "{{ '/mnt/docker/' + ansible_hostname }}"
-        state: directory
-        mode: '0755'
-        owner: root
-        group: root
     
     - name: Create a volume
       docker_volume:

@@ -1,6 +1,6 @@
 # Adapted from https://www.ansiblepilot.com/articles/mount-a-windows-share-in-linux-smb-or-cifs-ansible-module-mount/
 - name: Mount the Unraid Docker Volume Share
-  hosts: ubuntu
+  hosts: docker
   become: true
   vars:
     uri: "//192.168.1.100/vm-docker-data"
@@ -16,7 +16,7 @@
       ansible.builtin.file:
         path: "{{ mountpoint }}"
         state: directory
-        mode: '0755'
+        mode: '0777'
         owner: root
         group: root
     - name: Mount network share
@@ -30,7 +30,7 @@
       ansible.builtin.file:
         path: "{{ mountpoint + '/' + ansible_hostname }}"
         state: directory
-        mode: '0755'
+        mode: '0777'
         owner: root
         group: root
     # - name: Create docker volume directory
