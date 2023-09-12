@@ -1,0 +1,19 @@
+version: "3"
+services:
+  pialert:
+    container_name: pialert
+    # use the below line if you want to test the latest dev image
+    # image: "jokobsk/pi.alert_dev:latest" 
+    image: "jokobsk/pi.alert:latest"      
+    network_mode: "host"        
+    restart: unless-stopped
+    volumes:
+      - /server/containers/pialert/config:/home/pi/pialert/config
+      - /server/containers/pialert/db:/home/pi/pialert/db      
+      # (optional) useful for debugging if you have issues setting up the container
+      # - /server/containers/pialert/logs:/home/pi/pialert/front/log
+    environment:
+      - TZ=America/Phoenix      
+      - HOST_USER_ID=1000
+      - HOST_USER_GID=1000
+      - PORT=20211
