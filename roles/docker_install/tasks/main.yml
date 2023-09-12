@@ -1,0 +1,71 @@
+- name: install dependencies
+  apt:
+    name: 
+      - ca-certificates 
+      - curl 
+      - gnupg 
+      - lsb-release
+      - python3
+      - python3-docker
+    state: present
+    update_cache: true
+  become: true
+
+- name: add GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add docker repository to apt
+  apt_repository:
+    filename: docker 
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: install docker engine
+  apt:
+    name: 
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io
+      - docker-compose
+    state: present
+    update_cache: true
+  become: true
+
+- name: test docker
+  command: docker info
+  become: true
+
+
+# Trying to figure this out
+
+- name: copy Docker Compose files
+  copy:
+    src: docker-compose
+    dest: /server/
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start Watchtower
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/watchtower
+
+# # use files parameter to use multiple docker-compose.yml files
+# - name: deploy Docker Compose stack
+#   community.docker.docker_compose:
+#     project_src: /somewhere/yourproject
+#     files:
+#     - docker-compose.yml
+#     - docker-compose.prod.yml
+
+# - name: Start Watchtower container
+#   docker_container:
+#     name: watchtower
+#     image: containrrr/watchtower
+#     command: "--cleanup"
+#     restart_policy: always
+#     state: started
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
