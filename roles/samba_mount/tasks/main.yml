@@ -1,0 +1,36 @@
+- name: Ensure cifs-utils package is installed
+  apt:
+    name: cifs-utils
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Create a directory for the mount point
+  file:
+    path: /mnt/docker
+    state: directory
+    owner: "{{ samba_mount_user }}"
+    group: "{{ samba_mount_group }}"
+    mode: '0755'
+
+# - name: Mount the Samba share
+#   mount:
+#     name: /mnt/docker
+#     src: "//{{ samba_server }}/{{ samba_share }}"
+#     fstype: cifs
+#     opts: "username={{ samba_username }},password={{ samba_password }},uid={{ samba_mount_user }},gid={{ samba_mount_group }},rw"
+#     state: mounted
+
+- name: Create a directory for the mount point
+  file:
+    path: "{{ '/mnt/docker/' + ansible_hostname }}"
+    state: directory
+    owner: "{{ samba_mount_user }}"
+    group: "{{ samba_mount_group }}"
+    mode: '0755'
+
+- name: Create symbolic link 
+  file:
+    src: "{{ '/mnt/docker/' + ansible_hostname }}"
+    dest: "/server"
+    state: link
+
