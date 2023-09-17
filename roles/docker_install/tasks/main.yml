@@ -45,13 +45,6 @@
     src: docker-compose
     dest: /server/
 
-# Running docker-compose using shell. Ansible.Docker_Compose not currently working
-- name: Start Watchtower
-  become: True
-  shell:
-    cmd: "docker-compose -f docker-compose.yml up -d"
-    chdir: /server/docker-compose/watchtower
-
 # # use files parameter to use multiple docker-compose.yml files
 # - name: deploy Docker Compose stack
 #   community.docker.docker_compose:

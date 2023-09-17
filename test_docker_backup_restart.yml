@@ -11,17 +11,15 @@
     samba_mount_user: "root"
     samba_mount_group: "root"
   tasks:
-    - name: Update System
-      include_role:
-        name: apt-upgrade
+    - name: Task name
+      stat:
+        path: /server/containers
+      register: register_name
 
-    - name: Mount SMB File Share
+    - name: Backup docker configs
       include_role:
-        name: samba_mount
-
-    - name: Install Docker System
-      include_role:
-        name: docker_install
+        name: docker_backup_configs
+      when: register_name.stat.exists
 
     - name: Start Docker System Services
       include_role:

@@ -5,6 +5,7 @@ services:
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower
+    # network_mode: bridge_01
     environment:
     # with discord notifications
     # uses slack config for discord

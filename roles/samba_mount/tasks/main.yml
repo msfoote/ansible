@@ -4,14 +4,6 @@
     state: present
   when: ansible_os_family == "Debian"
 
-- name: Create a directory for the mount point
-  file:
-    path: /mnt/docker
-    state: directory
-    owner: "{{ samba_mount_user }}"
-    group: "{{ samba_mount_group }}"
-    mode: '0755'
-
 # - name: Mount the Samba share
 #   mount:
 #     name: /mnt/docker
@@ -19,6 +11,50 @@
 #     fstype: cifs
 #     opts: "username={{ samba_username }},password={{ samba_password }},uid={{ samba_mount_user }},gid={{ samba_mount_group }},rw"
 #     state: mounted
+
+# -----------------------------------------------
+# Handle the backup samba share
+# -----------------------------------------------
+- name: Create a directory for the backup mount point
+  file:
+    path: /mnt/backups
+    state: directory
+    owner: "{{ samba_mount_user }}"
+    group: "{{ samba_mount_group }}"
+    mode: '0755'
+
+- name: Mount the Samba backup share
+  mount:
+    name: /mnt/backups
+    src: "//{{ samba_server }}/Backup"
+    fstype: cifs
+    opts: "username={{ samba_username }},password={{ samba_password }},uid={{ samba_mount_user }},gid={{ samba_mount_group }},rw"
+    state: mounted
+
+- name: Create a directory for docker folders
+  file:
+    path: "{{ '/mnt/backups/' + ansible_hostname }}"
+    state: directory
+    owner: "{{ samba_mount_user }}"
+    group: "{{ samba_mount_group }}"
+    mode: '0755'
+
+- name: Create symbolic link 
+  file:
+    src: "{{ '/mnt/backups/' + ansible_hostname }}"
+    dest: "/backups"
+    state: link
+
+# -----------------------------------------------
+# Handle the docker volumes location
+# -----------------------------------------------
+- name: Create a directory for docker folders
+  file:
+    path: /mnt/docker
+    state: directory
+    owner: "{{ samba_mount_user }}"
+    group: "{{ samba_mount_group }}"
+    mode: '0755'
 
 - name: Create a directory for the mount point
   file:

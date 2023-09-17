@@ -1,0 +1,10 @@
+# -----------------------------------------------
+# Copy docker config files and dbs to server
+# -----------------------------------------------
+
+
+- name: Backup docker configs and dbs to server
+  copy:
+    remote_src: true
+    src: /backups/containers
+    dest: /server/
