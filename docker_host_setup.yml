@@ -6,8 +6,8 @@
   vars:
     samba_server: "192.168.1.100"
     samba_share: "vm-docker-data"
-    samba_username: "docker"
-    samba_password: "docker"
+    samba_username: "nobody"
+    samba_password: "none"
     samba_mount_user: "root"
     samba_mount_group: "root"
   tasks:
@@ -26,5 +26,7 @@
     - name: Start Docker System Services
       include_role:
         name: docker_system_services
+      vars:
+        start_stop: start
 
     
