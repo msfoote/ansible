@@ -1,10 +1,15 @@
+[VMs]
+Ansible-Host ansible_host=192.168.1.91
+Docker_Host ansible_host=192.168.1.92
+Docker_Test ansible_host=192.168.1.93
+
 [ubuntu]
 Ansible-Host ansible_host=192.168.1.91
-Docker ansible_host=192.168.1.92
+Docker_Host ansible_host=192.168.1.92
 
 [ubuntu_based]
 Ansible-Host ansible_host=192.168.1.91
-Docker ansible_host=192.168.1.92
+Docker_Host ansible_host=192.168.1.92
 MX_Linux ansible_host=192.168.1.95
 Moms_PC ansible_host=192.168.1.87
 
