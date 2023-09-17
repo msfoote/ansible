@@ -9,10 +9,10 @@ MX_Linux ansible_host=192.168.1.95
 Moms_PC ansible_host=192.168.1.87
 
 [docker_host]
-Docker ansible_host=192.168.1.92
+Docker_Host ansible_host=192.168.1.92
 
 [docker_test]
-Docker ansible_host=192.168.1.93
+Docker_Test ansible_host=192.168.1.93
 
 [windows]
 #Win10-VM ansible_host=192.168.1.99
