@@ -26,7 +26,3 @@
     - name: Start Docker System Services
       include_role:
         name: docker_system_services
-      vars:
-        start_stop: start
-
-    
