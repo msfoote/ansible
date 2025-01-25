@@ -1,0 +1,57 @@
+---
+- name: Update Windows
+  hosts: windows_nodes
+  gather_facts: false
+
+  vars:
+    ansible_user: "{{windows_ansible_user}}"
+    ansible_password: "{{ windows_ansible_user_pass }}"
+    # ansible_ssh_private_key_file: ~/.ssh/msfoote_key
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: Download Windows Updates via Windows Updates
+      ansible.windows.win_updates:
+        category_names:
+          - Application
+          - Connectors
+          - CriticalUpdates
+          - DefinitionUpdates
+          - DeveloperKits
+          - FeaturePacks
+          - Guidance
+          - SecurityUpdates
+          - ServicePacks
+          - Tools
+          - UpdateRollups
+          - Updates
+          - Upgrades
+          - Drivers
+        reboot: false
+        reboot_timeout: 1200
+        skip_optional: false
+        state: downloaded
+
+    - name: Update Windows via Windows Updates
+      ansible.windows.win_updates:
+        category_names:
+          # - Application
+          # - Connectors
+          - CriticalUpdates
+          - DefinitionUpdates
+          # - DeveloperKits
+          - FeaturePacks
+          # - Guidance
+          - SecurityUpdates
+          - ServicePacks
+          # - Tools
+          - UpdateRollups
+          - Updates
+          # - Upgrades
+          - Drivers
+        reboot: false
+        reboot_timeout: 1200
+        skip_optional: false
+        state: installed

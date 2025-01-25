@@ -1,0 +1,92 @@
+---
+- name: Create an Ansible user for future use
+  hosts: windows_nodes
+  gather_facts: false
+
+  vars:
+    ansible_user: "{{windows_default_user}}"
+    ansible_password: "{{windows_default_user_pass}}"
+
+  vars_files:
+    - secrets.yml
+
+
+  tasks:
+    - name: Create a hidden user account
+      ansible.windows.win_user:
+        name: "{{ windows_ansible_user }}"
+        password: "{{ windows_ansible_user_pass }}"
+        state: present
+        groups: Administrators
+        account_disabled: false
+        password_never_expires: true
+        user_cannot_change_password: false
+
+    # - name: Ensure user profile is created
+    #   ansible.windows.win_shell:
+    #     cmd: 'powershell.exe -Command "whoami"'
+    #   become: true
+    #   become_user: "{{ windows_ansible_user }}"
+
+    - name: Hide user from the logon screen
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList
+        name: "{{ windows_ansible_user }}"
+        type: dword
+        data: 0
+
+    - name: Create .ssh directory for the user
+      ansible.windows.win_file:
+        path: C:\Users\{{ windows_ansible_user }}\.ssh
+        state: directory
+        # args:
+        #   creates: C:\Users\{{ windows_ansible_user }}\.ssh
+
+    # - name: Copy public SSH key to authorized_keys
+    #   ansible.windows.win_copy:
+    #     src: ~/.ssh/msfoote_key.pub
+    #     dest: C:\Users\{{ windows_ansible_user }}\.ssh\authorized_keys
+    #     remote_src: false
+
+    - name: Set appropriate permissions on the .ssh directory
+      ansible.windows.win_acl:
+        path: C:\Users\{{ windows_ansible_user }}\.ssh
+        user: "{{ windows_ansible_user }}"
+        rights: full
+        type: allow
+        state: present
+
+    - name: Grant full control to SYSTEM, Admin and Windows_Anisble_User
+      ansible.windows.win_command: |
+        icacls "C:\Users\{{ windows_ansible_user }}\.ssh" /inheritance:r
+      args:
+        creates: null  # Prevents Ansible from skipping this command
+
+    - name: Grant full control to SYSTEM, Admin and Windows_Anisble_User
+      ansible.windows.win_command: |
+        icacls "C:\Users\{{ windows_ansible_user }}\.ssh" /grant SYSTEM:(F) Administrators:(F) "{{ windows_default_user }}:(F)" "{{ windows_ansible_user }}:(F)"
+      args:
+        creates: null  # Prevents Ansible from skipping this command
+
+    # - name: Copy public SSH key to administrators_authorized_keys
+    #   ansible.windows.win_copy:
+    #     src: ~/.ssh/msfoote_key.pub
+    #     dest: C:\ProgramData\ssh\administrators_authorized_keys
+    #     remote_src: false
+
+    - name: Remove inherited permissions from administrators_authorized_keys
+      ansible.windows.win_command: |
+        icacls "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r
+      args:
+        creates: null
+
+    - name: Remove inherited permissions from administrators_authorized_keys
+      ansible.windows.win_command: |
+        icacls "C:\ProgramData\ssh\administrators_authorized_keys" /grant SYSTEM:(F) Administrators:(F) "{{ windows_default_user }}:(F)" "{{ windows_ansible_user }}:(F)"
+      args:
+        creates: null
+
+    - name: Allow for ICMP networking
+      ansible.windows.win_shell: Enable-NetFirewallRule -DisplayName "File and Printer Sharing (Echo Request - ICMPv4-In)"
+      args:
+        creates: null
