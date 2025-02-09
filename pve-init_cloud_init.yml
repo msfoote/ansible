@@ -1,0 +1,152 @@
+---
+- name: Create template ubuntu vm
+  hosts: pvenodes # rocinante #
+
+  vars:
+    # ansible_user: root
+    ubuntu_version: "24.04"
+    image_name: "ubuntu-{{ ubuntu_version }}-server-cloudimg-amd64.img"
+    new_image_name: "ubuntu-{{ ubuntu_version }}-server-cloudimg-amd64-revised.img"
+    # Image location found @ https://cloud-images.ubuntu.com/
+    image_url: "https://cloud-images.ubuntu.com/releases/{{ ubuntu_version }}/release/{{ image_name }}"
+    sha256_url: "https://cloud-images.ubuntu.com/releases/{{ ubuntu_version }}/release/SHA256SUMS"
+
+  tasks:
+    - name: Download the SHA256SUMS file
+      ansible.builtin.get_url:
+        url: "{{ sha256_url }}"
+        dest: "/tmp/SHA256SUMS"
+        mode: "0644"
+        force: true
+      register: hash_download
+
+    # - name: Debug messages
+    #   ansible.builtin.debug:
+    #     msg: "{{ hash_download }}"
+
+    - name: Extract the hash for the image
+      ansible.builtin.shell: |
+        set -o pipefail && grep "{{ image_name }}" /tmp/SHA256SUMS | awk '{print $1}'
+      register: image_hash
+      changed_when: false
+      args:
+        executable: /bin/bash
+
+    # Instructions adapted from
+    # https://ronamosa.io/docs/engineer/LAB/proxmox-cloudinit/
+    # https://github.com/UntouchedWagons/Ubuntu-CloudInit-Docs
+    # https://technotim.live/posts/cloud-init-cloud-image/
+
+    - name: Download the cloud-init image
+      ansible.builtin.get_url:
+        url: "{{ image_url }}"
+        dest: /home/{{ ansible_user }}/{{ image_name }}
+        mode: '0644'
+        force: false
+        checksum: "sha256:{{ image_hash.stdout }}"  # Ensures the file is downloaded only if different
+      register: downloaded
+      changed_when: downloaded.dest is defined and downloaded.changed
+      notify:
+        - Modify the cloud-init image
+
+  handlers:
+    - name: Modify the cloud-init image
+      ansible.builtin.shell:
+        chdir: /home/{{ ansible_user }}
+        cmd: |
+            cp {{ image_name }} {{ new_image_name }}
+
+            qemu-img resize {{ new_image_name }} 32G
+
+            virt-customize -a {{ new_image_name }} --update
+            virt-customize -a {{ new_image_name }} --install qemu-guest-agent
+            virt-customize -a {{ new_image_name }} --run-command 'useradd --shell /bin/bash {{ ansible_user }}'
+            virt-customize -a {{ new_image_name }} --run-command 'mkdir -p /home/{{ ansible_user }}/.ssh'
+            virt-customize -a {{ new_image_name }} --ssh-inject {{ ansible_user }}:file:/root/.ssh/authorized_keys
+            virt-customize -a {{ new_image_name }} --run-command 'chown -R {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}'
+            virt-customize -a {{ new_image_name }} --upload /root/{{ ansible_user }}/files/sudoer_ansible:/etc/sudoers.d/{{ ansible_user }}
+            virt-customize -a {{ new_image_name }} --run-command 'chmod 0440 /etc/sudoers.d/{{ ansible_user }}'
+            virt-customize -a {{ new_image_name }} --run-command 'chown root:root /etc/sudoers.d/{{ ansible_user }}'
+            virt-customize -a {{ new_image_name }} --run-command '>/etc/machine-id' # important step so your clones get unique MAC address/network details.
+      changed_when: true
+
+- name: Create template VM
+  hosts: pvenodes # rocinante #
+  serial: 1
+
+  vars:
+    # ansible_user: root
+    ubuntu_version: "24.04"
+    vm_name: "ubuntu-{{ ubuntu_version }}-server-cloudinit-template"
+    image_name: "ubuntu-{{ ubuntu_version }}-server-cloudimg-amd64.img"
+    new_image_name: "ubuntu-{{ ubuntu_version }}-server-cloudimg-amd64-revised.img"
+    # Image location found @ https://cloud-images.ubuntu.com/
+    image_url: "https://cloud-images.ubuntu.com/releases/{{ ubuntu_version }}/release/{{ image_name }}"
+    sha256_url: "https://cloud-images.ubuntu.com/releases/{{ ubuntu_version }}/release/SHA256SUMS"
+
+  vars_files:
+    - secrets.yml
+
+  tasks:
+
+    - name: Check if VM already exists
+      ansible.builtin.shell: 'sudo pvesh get /cluster/resources --type=vm | grep 9000'
+      register: result
+      failed_when: false
+      ignore_errors: true
+      changed_when: result.rc != 0
+      notify:
+        - Create the template VM
+
+
+  handlers:
+    - name: Debug
+      ansible.builtin.debug:
+        msg: "{{ result }}"
+
+
+    - name: Create the template VM
+      ansible.builtin.shell:
+        chdir: /home/{{ ansible_user }}
+        cmd: |
+            sudo qm create 9000 --memory 2048 --core 2 --name ubuntu-cloud --net0 virtio,bridge=vmbr0
+            sudo qm disk import 9000 {{ new_image_name }} local-lvm
+            sudo qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
+            sudo qm set 9000 --ide2 local:cloudinit
+            sudo qm set 9000 --boot c --bootdisk scsi0
+            sudo qm set 9000 --serial0 socket --vga serial0
+            sudo qm set 9000 --agent enabled=1
+      changed_when: true
+      listen: Create the template VM
+
+    - name: Copy Cloud-Config
+      become: true
+      ansible.builtin.copy:
+        src: ./files/vendor.yaml
+        dest: /var/lib/vz/snippets/
+        owner: root
+        group: root
+        mode: "0440"
+        force: true
+      listen: Create the template VM
+
+    - name: Cloud-Init Config
+      ansible.builtin.shell:
+        chdir: /home/{{ ansible_user }}
+        cmd: |
+            sudo qm set 9000 --cicustom "vendor=local:snippets/vendor.yaml"
+            sudo qm set 9000 --tags ubuntu-template,24.04,cloudinit
+            sudo qm set 9000 --ciuser {{ remote_ansible_user }}
+            sudo qm set 9000 --cipassword $(openssl passwd -6 {{ remote_ansible_user_pass }})
+            sudo qm set 9000 --sshkeys ~/.ssh/authorized_keys
+            sudo qm set 9000 --ipconfig0 ip=dhcp
+      changed_when: true
+      listen: Create the template VM
+
+    - name: Convert VM to template
+      ansible.builtin.shell:
+        chdir: /home/{{ ansible_user }}
+        cmd: |
+            sudo qm template 9000
+      changed_when: true
+      listen: Create the template VM
