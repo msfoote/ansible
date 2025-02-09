@@ -1,0 +1,150 @@
+---
+- name: Create TrueNAS Dataset
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - secrets.yml
+
+  vars:
+    truenas_ip: "{{ truenas_ip_addr }}"
+    pool_name: "Slow"
+    dataset_name: "Backups"
+    smb_share_name: "Backups"
+    dataset_comments: "Backups organized into folders"
+    dataset_path: "/mnt/{{ pool_name }}/{{ dataset_name }}"
+    dataset_full_name: "{{ pool_name }}/{{ dataset_name }}"
+
+  tasks:
+    - name: Check if dataset exists
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/pool/dataset/id/{{ dataset_full_name | urlencode | regex_replace('/', '%2F') }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        status_code: [200, 404]
+        validate_certs: false
+      register: dataset_check
+      failed_when: false
+
+    - name: Create Dataset
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/pool/dataset"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        body:
+          name: "{{ dataset_full_name }}"
+          type: "FILESYSTEM"
+          comments: "{{ dataset_comments }}"
+          sync: "INHERIT"
+          compression: "INHERIT"
+          atime: "OFF"
+          exec: "INHERIT"
+          recordsize: "128K"
+          aclmode: "PASSTHROUGH"
+          acltype: "NFSV4"
+          share_type: "MULTIPROTOCOL"
+        status_code: [200, 201]
+        validate_certs: false
+      register: dataset_result
+      when: dataset_check.status == 404
+
+    - name: Set NFSv4 ACLs
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/filesystem/setacl"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        body:
+          path: "{{ dataset_path }}"
+          uid: 0
+          gid: 0
+          dacl:
+            nfs4_acl:
+              - tag: "owner@"
+                type: "ALLOW"
+                perms: ["READ_DATA", "WRITE_DATA", "APPEND_DATA", "READ_NAMED_ATTRS",
+                        "WRITE_NAMED_ATTRS", "EXECUTE", "DELETE_CHILD", "READ_ATTRIBUTES",
+                        "WRITE_ATTRIBUTES", "DELETE", "READ_ACL", "WRITE_ACL", "WRITE_OWNER",
+                        "SYNCHRONIZE"]
+                flags: ["INHERIT", "FILE_INHERIT", "DIRECTORY_INHERIT"]
+
+              - tag: "group@"
+                type: "ALLOW"
+                perms: ["READ_DATA", "EXECUTE", "READ_ATTRIBUTES", "READ_ACL", "SYNCHRONIZE"]
+                flags: ["INHERIT", "FILE_INHERIT", "DIRECTORY_INHERIT"]
+
+              - tag: "GROUP"
+                who: "544"
+                type: "ALLOW"
+                perms: ["READ_DATA", "WRITE_DATA", "APPEND_DATA", "READ_NAMED_ATTRS",
+                        "WRITE_NAMED_ATTRS", "EXECUTE", "DELETE_CHILD", "READ_ATTRIBUTES",
+                        "WRITE_ATTRIBUTES", "DELETE", "READ_ACL", "WRITE_ACL", "WRITE_OWNER",
+                        "SYNCHRONIZE"]
+                flags: ["INHERIT", "FILE_INHERIT", "DIRECTORY_INHERIT"]
+        status_code: [200, 201]
+        validate_certs: false
+      register: acl_result
+
+    # TODO Check if exists before implementing
+    - name: Share as NFS
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/sharing/nfs"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        body:
+          path: "{{ dataset_path }}"
+          mapall_user: "root"
+          mapall_group: "wheel"
+      register: sharenfs_result
+
+    - name: Get all SMB shares
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/sharing/smb"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        return_content: true
+        validate_certs: false
+      register: smb_shares_response
+
+    - name: Extract SMB share ID for share "{{ smb_share_name }}"
+      ansible.builtin.set_fact:
+        smb_share_id: "{{ item.id }}"
+      loop: "{{ smb_shares_response.json }}"
+      when: item.name == smb_share_name
+      register: smb_check
+
+    - name: Display Results
+      ansible.builtin.debug:
+        msg:
+          - "Dataset exists: {{ smb_check }}"
+
+    - name: Share as smb
+      ansible.builtin.uri:
+        url: "http://{{ truenas_ip }}/api/v2.0/sharing/smb"
+        method: POST
+        body_format: json
+        headers:
+          Authorization: "Bearer {{ truenas_api_key }}"
+        body:
+          # purpose: "DEFAULT_SHARE" # Default
+          path: "{{ dataset_path }}"
+          name: "{{ smb_share_name }}"
+          # comment: ""
+      register: sharesmb_result
+      when: smb_share_id is undefined
+
+    - name: Display Results
+      ansible.builtin.debug:
+        msg:
+          - "Dataset exists: {{ dataset_check.status == 200 }}"
+          - "Dataset Creation Result: {{ dataset_result | default('Dataset already exists') }}"
+          - "NFS Share Creation Result: {{ sharenfs_result }}"
+          - "SMB Share Creation Result: {{ sharesmb_result }}"
+          - "ACL Setting Result: {{ acl_result }}"
