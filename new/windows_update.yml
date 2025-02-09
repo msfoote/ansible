@@ -4,8 +4,8 @@
   gather_facts: false
 
   vars:
-    ansible_user: "{{windows_ansible_user}}"
-    ansible_password: "{{ windows_ansible_user_pass }}"
+    ansible_user: "{{remote_ansible_user"
+    ansible_password: "{{ remote_ansible_user_pass }}"
     # ansible_ssh_private_key_file: ~/.ssh/msfoote_key
 
   vars_files:
