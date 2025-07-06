@@ -1,9 +1,0 @@
-- hosts: windows_test
-  remote_user: matthew
-  gather_facts: true
-
-  tasks:
-  - name: Update cholatey installations
-    win_chocolatey:
-      name: all
-      state: latest

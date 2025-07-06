@@ -1,1 +1,0 @@
-Copy to %APPDATA%\Roaming\Keypirinha\

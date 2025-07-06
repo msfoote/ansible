@@ -1,5 +1,0 @@
-- name: Install Portainer
-  hosts: "192.168.1.92"
-  become: true
-  tasks:
-  - name: install dependencies

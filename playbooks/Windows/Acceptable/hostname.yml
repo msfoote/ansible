@@ -1,9 +1,0 @@
-- hosts: '{{ targeted_host }}'
-  remote_user: matthew
-  gather_facts: true
-
-  tasks:
-  - name: Change hostname
-    ansible.windows.win_hostname:
-      name: '{{ new_hostname }}'
-    register: res

@@ -1,8 +1,0 @@
-# Todos
-#  - Configure git username and email: https://training.github.com/downloads/github-git-cheat-sheet/
-#  - Clone stacks
-#  - Config git to use ssh key
-#     - chmod 600 /root/.ssh/msfoote_key
-#     - eval "$(ssh-agent -s)"
-#     - ssh-add /root/.ssh/msfoote_key
-

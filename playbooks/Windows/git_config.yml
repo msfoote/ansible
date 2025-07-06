@@ -1,7 +1,0 @@
-- hosts: windows_test
-  remote_user: matthew
-  gather_facts: true
-
-  tasks:
-  - name: Set git email and name
-    ansible.builtin.command: git config --global user.email "matthew.foote@gmail.com" && git config --global user.name "Matthew Foote"
