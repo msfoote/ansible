@@ -1,0 +1,42 @@
+---
+- name: Find Docker Compose files
+  ansible.builtin.find:
+    paths: "{{ project.path }}"
+    patterns:
+      - "compose.yml"
+      - "compose.yaml"
+      - "docker-compose.yml"
+      - "docker-compose.yaml"
+    use_regex: no
+  register: found_files
+
+- name: Verify single compose file found
+  ansible.builtin.assert:
+    that:
+      - found_files.matched == 1
+    fail_msg: "Expected exactly 1 compose file in {{ project.path }}"
+  when: found_files.matched > 0
+
+- name: Set compose file path
+  ansible.builtin.set_fact:
+    compose_file: "{{ project.path }}/{{ found_files.files[0].path | basename }}"
+  when: found_files.matched > 0
+
+- name: Stop containers gracefully
+  ansible.builtin.command: "docker-compose -f {{ compose_file }} down"
+  when: found_files.matched > 0
+  register: stop_result
+  failed_when: stop_result.rc != 0 and "'No such service'" not in stop_result.stderr
+
+- name: Backup directory using rsync
+  ansible.builtin.command: >
+    rsync -a --delete {{ project.path }}/ {{ backup_dest }}/{{ ansible_hostname }}-docker_data_backup-{{ backup_timestamp }}/{{ project.path | basename }}/
+  register: backup_result
+  failed_when: backup_result.rc != 0
+
+- name: Start containers (if stopped successfully)
+  ansible.builtin.command: >
+    docker-compose -f {{ compose_file }} up -d
+  when: found_files.matched > 0 and stop_result is succeeded
+  register: start_result
+  failed_when: start_result.rc != 0

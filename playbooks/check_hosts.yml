@@ -1,0 +1,40 @@
+---
+- name: Check host connectivity and gather basic facts
+  hosts: all
+  gather_facts: true
+  vars_files:
+    - ../group_vars/secrets.yml
+  any_errors_fatal: false
+  vars:
+    is_reachable: >-
+      {{
+        ('win_ping_result.ping' in vars and win_ping_result.ping == 'pong') or
+        ('linux_ping_result.ping' in vars and linux_ping_result.ping == 'pong')
+      }}
+
+
+  tasks:
+    - name: Test connection (Windows)
+      ansible.windows.win_ping:
+      when: ansible_os_family == 'Windows'
+      ignore_errors: true
+      register: win_ping_result
+
+    - name: Test connection (Linux/SSH)
+      ansible.builtin.ping:
+      when: ansible_os_family != 'Windows'
+      ignore_errors: true
+      register: linux_ping_result
+
+    - name: Create simplified host report
+      ansible.builtin.set_fact:
+        host_report: |
+          {
+            "name": "{{ inventory_hostname }}",
+            "reachable": "{{ is_reachable }}",
+            "os": "{{ ansible_distribution | default(ansible_os_family | default('Unknown')) }}",
+            "ip": "{{ ansible_default_ipv4.address | default('N/A') }}",
+
+    - name: Display host status
+      ansible.builtin.debug:
+        var: host_report

@@ -1,0 +1,203 @@
+---
+- name: Remove malformed Docker repository file if it exists
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/download_docker_com_linux_ubuntu_dists_bookworm_pool_stable_amd64.list
+    state: absent
+  when: ansible_os_family == 'Debian'
+
+- name: Remove any existing Docker repository files
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/{{ item }}
+    state: absent
+  loop:
+    - docker.list
+    - download_docker_com_linux_ubuntu.list
+    - download_docker_com_linux_ubuntu_dists_bookworm_pool_stable_amd64.list
+  ignore_errors: true
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure keyring directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  when: ansible_os_family == 'Debian'
+
+- name: Add Docker GPG key (new method)
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+  when: ansible_os_family == 'Debian'
+
+- name: Add Docker repository (corrected for Debian/Ubuntu)
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/{{ 'debian' if ansible_distribution == 'Debian' else 'ubuntu' }} {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: true
+    filename: docker
+    mode: 0644  # Add this to ensure proper file permissions
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker dependencies
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - gnupg-agent
+    - gnupg
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: Install Docker Compose
+  ansible.builtin.get_url:
+    url: https://github.com/docker/compose/releases/download/v{{ docker_compose_version | default("2.25.0") }}/docker-compose-linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+# - name: Install Komodor Agent
+#   when: komodor_api_key is defined
+#   become: true
+#   block:
+#     - name: Download and install Komodor Agent
+#       ansible.builtin.get_url:
+#         url: https://raw.githubusercontent.com/moghtech/komodo/main/scripts/setup-periphery.py
+#         dest: /tmp/setup-periphery.py
+#         mode: '0755'
+
+#     - name: Run Komodor Agent installer
+#       ansible.builtin.command: python3 /tmp/setup-periphery.py
+#       environment:
+#         API_KEY: "{{ komodor_api_key }}"
+#       args:
+#         removes: /tmp/setup-periphery.py  # Clean up after installation
+
+- name: Install NFS client packages
+  ansible.builtin.apt:
+    name: nfs-common
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Create mount point directories
+  ansible.builtin.file:
+    path: "{{ item.mount }}"
+    state: directory
+    mode: '0775'
+  loop: "{{ docker_nfs_mounts }}"
+  when: docker_nfs_mounts is defined
+
+- name: Mount NFS shares
+  ansible.posix.mount:
+    path: "{{ item.mount }}"
+    src: "{{ item.server }}:{{ item.export }}"
+    fstype: nfs
+    opts: "{{ item.options | default('defaults') }}"
+    state: mounted
+  loop: "{{ docker_nfs_mounts }}"
+  when: docker_nfs_mounts is defined
+
+- name: Ensure NFS mounts persist after reboot
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "{{ item.server }}:{{ item.export }} {{ item.mount }} nfs {{ item.options | default('defaults') }} 0 0"
+    state: present
+    regexp: "^{{ item.server }}:{{ item.export }}"
+  loop: "{{ docker_nfs_mounts }}"
+  when: docker_nfs_mounts is defined
+
+# - name: Set permissions on NFS directories
+#   ansible.builtin.file:
+#     path: "{{ item.path }}"
+#     owner: "{{ item.owner | default(omit) }}"
+#     group: "{{ item.group | default(omit) }}"
+#     mode: "{{ item.mode | default(omit) }}"
+#     recurse: "{{ item.recurse | default(false) }}"
+#   loop: "{{ docker_nfs_permissions }}"
+#   when:
+#     - docker_nfs_permissions is defined
+#     - docker_nfs_mounts is defined  # Ensure mounts exist first
+
+- name: Install Git package
+  ansible.builtin.apt:
+    name: git
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Check if repository exists
+  ansible.builtin.stat:
+    path: "{{ docker_git_repo_dest }}"
+  register: repo_exists
+
+- name: Clone repository (if not exists)
+  ansible.builtin.git:
+    repo: "{{ docker_git_repo_url }}"
+    dest: "{{ docker_git_repo_dest }}"
+    version: "{{ docker_git_repo_version | default('HEAD') }}"
+    depth: "{{ docker_git_repo_depth | default(omit) }}"
+    accept_hostkey: true
+  when: not repo_exists.stat.exists
+
+- name: Update repository (if exists)
+  ansible.builtin.git:
+    repo: "{{ docker_git_repo_url }}"
+    dest: "{{ docker_git_repo_dest }}"
+    version: "{{ docker_git_repo_version | default('HEAD') }}"
+    update: true
+    accept_hostkey: true
+  when: repo_exists.stat.exists
+
+- name: Ensure .env directory exists
+  ansible.builtin.file:
+    path: "{{ docker_env_dir | default('/opt/docker') }}"
+    state: directory
+    mode: '0755'
+
+- name: Find all subdirectories in /opt/docker
+  ansible.builtin.find:
+    paths: "{{ docker_env_dir | default('/opt/docker') }}"
+    recurse: no
+    file_type: directory
+  register: docker_subdirs
+
+- name: Copy .env file to each subdirectory
+  ansible.builtin.copy:
+    src: "{{ docker_env_encrypted_src }}"
+    dest: "{{ item.path }}/.env"
+    decrypt: true
+    mode: '0600'
+  loop: "{{ docker_subdirs.files }}"
+  when: 
+    - docker_env_encrypted_src is defined
+    - docker_subdirs.matched > 0
+  no_log: true
+  register: env_copy_result
+  failed_when: env_copy_result is failed and "'censored'" not in env_copy_result.msg
+  ignore_errors: true
+  
+- name: Fail with meaningful message if decryption failed
+  ansible.builtin.fail:
+    msg: "Failed to decrypt .env file - check that the file exists and the vault password is correct"
+  when: env_copy_result is failed and "'censored'" not in env_copy_result.msg
+
+# ... existing code ...
+
+- name: Set ownership of docker_env_dir to msfoote
+  ansible.builtin.file:
+    path: "{{ docker_env_dir | default('/opt/docker') }}"
+    owner: msfoote
+    group: msfoote
+    recurse: true
+  when: inventory_hostname == 'docker_host'

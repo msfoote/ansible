@@ -1,0 +1,6 @@
+---
+- import_playbook: localhost_update_known_hosts.yml
+- import_playbook: windows_ssh_powershell.yml
+- import_playbook: windows_ansible_user.yml
+- import_playbook: windows_ansible_apps.yml
+- import_playbook: windows_update.yml

@@ -1,0 +1,70 @@
+docker_nfs_mounts:
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Docker-Data"
+    mount: "/mnt/docker_data"
+    options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Multimedia/Movies"
+    mount: "/mnt/movies"
+    options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Multimedia/Television"
+    mount: "/mnt/television"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Multimedia/Audiobooks"
+    mount: "/mnt/audiobooks"
+    options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Multimedia/Podcasts"
+    mount: "/mnt/podcasts"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Photos"
+    mount: "/mnt/photos"
+    options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Scratch/Uploads/Photos"
+    mount: "/mnt/uploads/photos"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Downloads"
+    mount: "/mnt/downloads"
+    options: "rw,hard,intr,noatime"
+  
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Documents"
+    mount: "/mnt/documents"
+    options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Scratch/Uploads/Scans"
+    mount: "/mnt/uploads/scans"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Games"
+    mount: "/mnt/games"
+    options: "rw,hard,intr,noatime"
+  
+
+
+
+docker_git_repo_url: "https://{{ github_pat }}@github.com/msfoote/docker.git"
+docker_git_repo_dest: "/opt/docker/"
+
+# Path to encrypted .env file in your repository
+docker_env_encrypted_src: ".env"
+
+# Destination directory for decrypted .env file
+docker_env_dir: "/opt/docker"
+
+# Add this to your variables
+# docker_nfs_permissions:
+#   - path: "/mnt/docker_data/n8n"  # Full path to directory
+#     owner: "1000"              # Owner to set
+#     group: "1000"             # Group to set
+#     mode: "0755"                   # Permissions mode
+#     recurse: true                 # Whether to apply recursively

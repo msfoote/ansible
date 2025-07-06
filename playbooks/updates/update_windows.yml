@@ -1,0 +1,43 @@
+---
+- name: Apply Windows updates and package management
+  hosts: all
+  gather_facts: false
+  serial: 1
+  vars_files:
+    - /root/ansible/group_vars/secrets.yml
+
+  pre_tasks:
+    - name: Verify host has windows tag
+      fail:
+        msg: "This playbook can only run on hosts tagged with 'windows'"
+      when: "'windows' not in hostvars[inventory_hostname].tags"
+      run_once: true
+
+  tasks:
+  - name: Run Windows Updates
+    ansible.windows.win_updates:
+      category_names:
+        - CriticalUpdates
+        - SecurityUpdates
+        - UpdateRollups
+        - FeaturePacks
+        - Application
+        - Definitions
+      state: installed
+      reboot: true
+    register: win_updates_result
+
+  - name: Ensure Chocolatey is installed
+    chocolatey.chocolatey.win_chocolatey:
+      name: chocolatey
+      state: present
+
+  - name: Update all Chocolatey packages
+    chocolatey.chocolatey.win_chocolatey:
+      name: all
+      state: latest
+    ignore_errors: true
+
+  - name: Reboot if updates required it
+    ansible.builtin.debug:
+      when: win_updates_result.reboot_required

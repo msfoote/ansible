@@ -1,55 +1,77 @@
+---  # Start with YAML document marker
 all:
   children:
     all_nodes:
       hosts:
-        test-pc:
-          ansible_host: 192.168.1.180
-          # ansible_user: msfoote
-          # ansible_ssh_private_key_file: ~/.ssh/msfoote_key
-          ansible_connection: ssh
-          ansible_shell_type: powershell
         matthew-pc:
-          ansible_host: 192.168.1.98 # 89
-          # ansible_user: msfoote
-          # ansible_ssh_private_key_file: ~/.ssh/msfoote_key
+          ansible_host: 192.168.1.89
+          ansible_user: msfoote
+          ansible_password: "{{ windows_default_user_pass }}"
+          ansible_ssh_private_key_file: ~/.ssh/ansible_key
           ansible_connection: ssh
           ansible_shell_type: powershell
           ansible_shell_executable: powershell.exe
-        monica:
-          ansible_host: 192.168.1.101
-          ansible_user: ansible
+          tags: ['windows', 'gaming', 'development', 'entertainment']
+        tyson-pc:
+          ansible_host: 192.168.1.88
+          ansible_user: msfoote
+          ansible_password: "{{ windows_default_user_pass }}"
           ansible_ssh_private_key_file: ~/.ssh/ansible_key
-        rocinante:
-          ansible_host: 192.168.1.103
-          ansible_user: ansible
+          ansible_connection: ssh
+          ansible_shell_type: powershell
+          ansible_shell_executable: powershell.exe
+          tags: ['windows']
+        maxhub:
+          ansible_host: 192.168.1.40
+          ansible_password: "{{ windows_default_user_pass }}"
+          ansible_connection: ssh
+          ansible_shell_type: powershell
+          ansible_shell_executable: powershell.exe
+          tags: ['windows']
+        Windows_Scanner:
+          ansible_host: 192.168.1.156
+          ansible_user: matthew
+          ansible_password: "{{ windows_default_user_pass }}"
           ansible_ssh_private_key_file: ~/.ssh/ansible_key
+          ansible_connection: ssh
+          ansible_shell_type: powershell
+          ansible_shell_executable: powershell.exe
+          tags: ['windows']
         truenas:
           ansible_host: 192.168.1.114
           ansible_user: msfoote
           ansible_ssh_private_key_file: ~/.ssh/msfoote_key
-    windows_nodes:
-      hosts:
-        matthew-pc:
-        test-pc:
-    gaming:
-      hosts:
-        matthew-pc:
-    development:
-      hosts:
-        matthew-pc:
-        test-pc:
-    entertainment:
-      hosts:
-        matthew-pc:
-    test:
-      hosts:
-        test-pc:
-
-    pvenodes:
-      hosts:
+          tags: ['truenas']
         monica:
-        rocinante:
+          ansible_host: 192.168.1.101
+          ansible_user: ansible
+          ansible_ssh_private_key_file: ~/.ssh/ansible_key
+          tags: ['pve']
+        HP1:
+          ansible_host: 192.168.1.110
+          ansible_user: ansible
+          ansible_ssh_private_key_file: ~/.ssh/ansible_key
+          tags: ['pve']
+        HomeAssistant:
+          ansible_host: 192.168.1.20
+          tags: ['homeassistant']
+        dockge:
+          ansible_host: 192.168.1.11
+          ansible_user: root
+          ansible_ssh_private_key_file: ~/.ssh/msfoote_key
+          tags: ['docker']
+        ansible:
+          ansible_host: 192.168.1.116
+          ansible_user: ansible
+          ansible_ssh_private_key_file: ~/.ssh/ansible_key
+          tags: ['ansible']
+        docker_host:
+          ansible_host: 192.168.1.39
+          ansible_user: msfoote
+          ansible_ssh_private_key_file: ~/.ssh/msfoote_key
+          tags: ['docker']
 
-    truenasnodes:
+    docker:
       hosts:
-        truenas:
+        dockge:
+        docker_host:

@@ -1,0 +1,16 @@
+---
+- name: Debug variables
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/secrets.yml
+  tasks:
+    - name: Display windows_default_user_pass
+      debug:
+        var: windows_default_user_pass
+        verbosity: 0
+
+    - name: Display all variables
+      debug:
+        var: vars
+        verbosity: 1

@@ -1,0 +1,89 @@
+
+
+- hosts: new_pcs
+  remote_user: msfoote
+  gather_facts: true
+
+  tasks:
+  # - name: Get MAC addresses
+  #   ansible.windows.win_shell: |
+  #     Get-NetAdapter | Select-Object -Property Name, MacAddress | ConvertTo-Json
+  #   register: mac_addresses
+
+  # - name: Display MAC addresses
+  #   ansible.builtin.debug:
+  #     var: mac_addresses.stdout
+
+  - name: Get complete network adapter information
+    ansible.windows.win_shell: |
+      $adapters = Get-NetAdapter | ForEach-Object {
+          $adapter = $_
+          $ipconfig = Get-NetIPConfiguration -InterfaceAlias $adapter.InterfaceAlias -ErrorAction SilentlyContinue
+          [PSCustomObject]@{
+              Name = $adapter.Name
+              InterfaceAlias = $adapter.InterfaceAlias
+              MacAddress = $adapter.MacAddress
+              Status = $adapter.Status
+              InterfaceDescription = $adapter.InterfaceDescription
+              ExistingIP = $ipconfig.IPv4Address.IPAddress
+              ExistingGateway = $ipconfig.IPv4DefaultGateway.NextHop
+              ExistingDNS = ($ipconfig.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses
+          }
+      }
+      $adapters | ConvertTo-Json -Depth 3
+    register: network_info
+
+  - name: Display Network addresses with valid MAC
+    ansible.builtin.debug:
+      msg: "{{ (network_info.stdout | from_json) | selectattr('MacAddress', 'match', '.+') | list }}"
+
+  # - name: Disable screen timeout (set to never turn off)
+  #   ansible.windows.win_powercfg:
+  #     setting: monitor_timeout_ac
+  #     value: 0
+  #   register: result_screen_timeout
+
+  # - name: Disable sleep mode
+  #   ansible.windows.win_powercfg:
+  #     setting: standby_timeout_ac
+  #     value: 0
+  #   register: result_sleep_mode
+
+  # - name: Disable hibernate mode
+  #   ansible.windows.win_powercfg:
+  #     setting: hibernate_timeout_ac
+  #     value: 0
+  #   register: result_hibernate_mode
+
+  - name: Set high performance power plan
+    community.windows.win_power_plan:
+      name: high performance
+
+  - name: Change hostname
+    ansible.windows.win_hostname:
+      name: '{{ new_hostname | default(default_hostname) }}'
+    register: result_hostname
+  
+  - name: Configure auto-logon
+    community.windows.win_auto_logon:
+      username: '{{ auto_logon_user | default(ansible_user) }}'
+      password: '{{ auto_logon_password | default(ansible_password) }}'
+    register: autologon_result
+
+  - name: Display MAC addresses
+    ansible.builtin.debug:
+      var: autologon_result
+
+  - name: Reboot
+    ansible.windows.win_reboot:
+      msg: "Rebooting to apply system configuration changes"
+      connect_timeout: 5
+      pre_reboot_delay: 30
+      post_reboot_delay: 60
+    when:
+      - result_hostname.reboot_required
+        # or result_hibernate_mode.reboot_required
+        # or result_screen_timeout.reboot_required
+        # or result_sleep_mode.reboot_required
+        # result_powerplan.reboot_required or
+        # autologon_result.reboot_required

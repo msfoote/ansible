@@ -1,0 +1,17 @@
+---
+- name: Update all systems based on OS family
+  hosts: all
+  gather_facts: true  # Required for os_family detection
+  # become: "{{ ansible_os_family != 'Windows' }}"  # Only become for non-Windows
+  # become_method: sudo  # For Linux systems
+  vars_files:
+    - /root/ansible/group_vars/secrets.yml
+
+  tasks:
+    - name: Load variables
+      include_vars: ~/ansible/group_vars/secrets.yml
+
+    - name: Include OS-specific update tasks
+      include_tasks: update_debian.yml # "update_{{ ansible_os_family | lower }}.yml"
+      when: ansible_os_family in ['Debian', 'RedHat', 'Windows']
+      ignore_errors: true

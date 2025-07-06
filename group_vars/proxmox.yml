@@ -1,0 +1,25 @@
+# ~/ansible/group_vars/proxmox.yml
+vm_list:
+  - name: docker-host
+    node: proxmox1
+    vmid: 330
+    cores: 2
+    memory: 4096
+    disk: 20G
+    net_bridge: vmbr0
+    ip: 192.168.1.30/24
+    gateway: 192.168.1.1
+    os: ubuntu
+    type: vm  # Can be "vm" or "lxc"
+
+  - name: test-lxc
+    node: proxmox2
+    vmid: 331
+    cores: 2
+    memory: 2048
+    disk: 10G
+    net_bridge: vmbr0
+    ip: 192.168.1.31/24
+    gateway: 192.168.1.1
+    os: debian
+    type: lxc

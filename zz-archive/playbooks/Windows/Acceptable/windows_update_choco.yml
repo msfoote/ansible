@@ -1,0 +1,9 @@
+- hosts: windows_nodes
+  remote_user: msfoote
+  gather_facts: true
+
+  tasks:
+  - name: Update chocolatey installations
+    win_chocolatey:
+      name: all
+      state: latest

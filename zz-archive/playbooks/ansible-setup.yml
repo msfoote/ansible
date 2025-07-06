@@ -1,0 +1,14 @@
+---
+- name: Ensure required Ansible collections are installed
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Install required Ansible collections
+      ansible.builtin.command:
+        cmd: "ansible-galaxy collection install {{ item }}"
+      loop:
+        - community.general
+        - community.libvirt
+      changed_when: false  # Ensures Ansible doesn't report unnecessary changes

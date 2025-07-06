@@ -1,0 +1,30 @@
+# main.yml
+---
+- name: Mount the Unraid Docker Volume Share
+  hosts: docker_test
+  become: true
+  vars:
+    samba_server: "192.168.1.100"
+    samba_share: "vm-docker-data"
+    samba_username: "nobody"
+    samba_password: ""
+    samba_mount_user: "root"
+    samba_mount_group: ""
+  tasks:
+    - name: Task name
+      stat:
+        path: /server/containers
+      register: register_name
+
+    - name: Backup docker configs
+      include_role:
+        name: docker_backup_configs
+      when: register_name.stat.exists
+
+    - name: Start Docker System Services
+      include_role:
+        name: docker_system_services
+      vars:
+        start_stop: start
+
+    

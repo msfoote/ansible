@@ -1,0 +1,54 @@
+#  ansible-playbook -i inventory/inventory.yml playbooks/docker_backup.yml
+---
+- name: Backup Docker data for hosts in the 'docker' group
+  hosts: docker_host
+  become: true
+  gather_facts: true
+  vars:
+    backup_root: /opt/docker
+    backup_dest: /mnt/docker_data
+    backup_timestamp: "{{ ansible_date_time.date }}-{{ ansible_date_time.time }}"
+  tasks:
+    - name: Check if {{ backup_root }} exists
+      ansible.builtin.stat:
+        path: "{{ backup_root }}"
+      register: docker_dir
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - zip
+        - docker-compose
+      when: ansible_os_family == 'Debian'
+      become: true
+
+    - name: Create backup directory if it doesn't exist
+      ansible.builtin.file:
+        path: "{{ backup_dest }}"
+        state: directory
+        mode: '0755'
+      when: docker_dir.stat.exists
+
+    - name: Find all directories in {{ backup_root }}
+      ansible.builtin.find:
+        paths: "{{ backup_root }}"
+        file_type: directory
+        recurse: no
+      register: docker_projects
+      when: docker_dir.stat.exists
+
+    - name: Create backup directory structure
+      ansible.builtin.file:
+        path: "{{ backup_dest }}/{{ ansible_hostname }}-docker_data_backup-{{ backup_timestamp }}"
+        state: directory
+        mode: '0755'
+      when: docker_projects.files | length > 0
+
+    - name: Backup docker projects
+      ansible.builtin.include_tasks: docker_backup_subtask-01.yml
+      loop: "{{ docker_projects.files }}"
+      loop_control:
+        loop_var: project
+      when: docker_projects.files | length > 0

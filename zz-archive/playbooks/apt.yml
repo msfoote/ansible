@@ -1,0 +1,7 @@
+- hosts: "ubuntu_based"
+  become: yes
+  tasks:
+    - name: Update APT Repository Indices and Upgrade Packages
+      apt:
+        update_cache: yes
+        upgrade: 'yes'

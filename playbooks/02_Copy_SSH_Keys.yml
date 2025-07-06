@@ -1,0 +1,68 @@
+---
+- name: Deploy SSH key to all hosts
+  hosts: all  # Targets all hosts in inventory
+  gather_facts: true  # Required for OS detection
+  vars:
+    ssh_pub_key: "{{ lookup('file', '~/.ssh/ansible_key.pub') }}"  # Your public key
+
+  tasks:
+    - name: Create .ssh directory (Linux)
+      ansible.builtin.file:
+        path: "~/.ssh"
+        state: directory
+        mode: '0700'
+      when: ansible_os_family != 'Windows'
+
+    - name: Create .ssh directory (Windows)
+      ansible.windows.win_file:
+        path: "C:\\Users\\{{ ansible_user }}\\.ssh"
+        state: directory
+      when: ansible_os_family == 'Windows'
+
+    - name: Deploy key (Linux)
+      ansible.builtin.lineinfile:
+        path: "~/.ssh/authorized_keys"
+        line: "{{ ssh_pub_key }}"
+        create: true
+        mode: '0600'
+      when: ansible_os_family != 'Windows'
+
+    - name: Deploy key (Windows)
+      ansible.windows.win_file:
+        path: "C:\\Users\\{{ ansible_user }}\\.ssh\\authorized_keys"
+        state: touch
+      when: ansible_os_family == 'Windows'
+
+    - name: Fix Windows permissions (critical)
+      ansible.windows.win_shell: |
+        icacls "C:\\Users\\{{ ansible_user }}\\.ssh\\authorized_keys" /inheritance:r /grant "{{ ansible_user }}:F"
+      when: ansible_os_family == 'Windows'
+
+    - name: Configure SSHd for public key auth (Linux)
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PubkeyAuthentication"
+        line: "PubkeyAuthentication yes"
+        state: present
+        backup: true
+      notify: Restart SSHd (Linux)
+      when: ansible_os_family != 'Windows'
+
+    - name: Configure SSHd for public key auth (Windows)
+      ansible.windows.win_shell: |
+        Add-Content -Path $env:ProgramData\ssh\sshd_config -Value "PubkeyAuthentication yes`nAuthorizedKeysFile .ssh/authorized_keys"
+      when: ansible_os_family == 'Windows'
+      notify: Restart SSHd (Windows)
+
+  handlers:
+    - name: Restart SSHd (Linux)
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+      when: ansible_os_family != 'Windows'
+
+    - name: Restart SSHd (Windows)
+      ansible.windows.win_service:
+        name: sshd
+        state: restarted
+      when: ansible_os_family == 'Windows'

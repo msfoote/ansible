@@ -1,0 +1,11 @@
+# ansible-playbook -i inventory/inventory.yml playbooks/docker_setup.yml
+
+---
+- name: Install Docker
+  hosts: docker
+  become: true
+  roles:
+    - docker
+  vars_files:
+    - /root/ansible/group_vars/secrets.yml
+    - /root/ansible/roles/docker/vars/main.yml

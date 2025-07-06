@@ -1,0 +1,55 @@
+# ~/ansible/playbooks/create-vms.yml
+---
+- name: Create VMs and LXC Containers on Proxmox
+  hosts: pvenodes
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Create Virtual Machines on Proxmox
+      when: item.type == "vm"
+      community.general.proxmox_kvm:
+        api_host: "{{ ansible_host }}"
+        api_user: "root@pam"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ item.node }}"
+        vmid: "{{ item.vmid }}"
+        name: "{{ item.name }}"
+        cores: "{{ item.cores }}"
+        memory: "{{ item.memory }}"
+        disks:
+          - size: "{{ item.disk }}"
+            type: scsi
+        net:
+          - bridge: "{{ item.net_bridge }}"
+        os_type: "cloud-init"
+        ipconfig:
+          - ip: "{{ item.ip }}"
+            gw: "{{ item.gateway }}"
+        state: present
+      loop: "{{ vm_list }}"
+
+    - name: Create LXC Containers on Proxmox
+      when: item.type == "lxc"
+      community.general.proxmox_lxc:
+        api_host: "{{ ansible_host }}"
+        api_user: "root@pam"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ item.node }}"
+        vmid: "{{ item.vmid }}"
+        name: "{{ item.name }}"
+        cores: "{{ item.cores }}"
+        memory: "{{ item.memory }}"
+        storage: "local-lvm"
+        password: "changeme"
+        net:
+          - name: eth0
+            bridge: "{{ item.net_bridge }}"
+            ip: "{{ item.ip }}"
+            gw: "{{ item.gateway }}"
+        ostemplate: "local:vztmpl/debian-11-standard_11.6-1_amd64.tar.zst"
+        unprivileged: true
+        features:
+          - nesting=1
+        state: started
+      loop: "{{ vm_list }}"

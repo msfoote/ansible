@@ -1,0 +1,84 @@
+# -----------------------------------------------
+# Handle the docker volumes location
+# -----------------------------------------------
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "watchtower"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "pialert"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "pihole"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "portainer"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "fenrus"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "organizr"
+
+# Running docker-compose using shell. Ansible.Docker_Compose not currently working
+- name: Start {{ docker_service }}
+  become: True
+  shell:
+    cmd: "docker-compose -f docker-compose.yml up -d"
+    chdir: /server/docker-compose/{{ docker_service }}
+  vars:
+    docker_service: "uptime-kuma"
+
+# # use files parameter to use multiple docker-compose.yml files
+# - name: deploy Docker Compose stack
+#   community.docker.docker_compose:
+#     project_src: /somewhere/yourproject
+#     files:
+#     - docker-compose.yml
+#     - docker-compose.prod.yml
+
+# - name: Start Watchtower container
+#   docker_container:
+#     name: watchtower
+#     image: containrrr/watchtower
+#     command: "--cleanup"
+#     restart_policy: always
+#     state: started
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock

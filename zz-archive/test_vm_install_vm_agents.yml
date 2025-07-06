@@ -1,0 +1,20 @@
+# main.yml
+---
+- name: Install QEMU Guest Agent
+  hosts: "VMs"
+  become: true
+  # vars:
+  #   samba_server: "192.168.1.100"
+  #   samba_share: "vm-docker-data"
+  #   samba_username: "nobody"
+  #   samba_password: ""
+  #   samba_mount_user: "root"
+  #   samba_mount_group: ""
+  tasks:
+    - name: Update System
+      include_role:
+        name: apt-upgrade
+
+    - name: Install QEMU Guest Agent
+      include_role:
+        name: qemu-guest-agent
