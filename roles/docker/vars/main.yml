@@ -7,10 +7,10 @@ docker_nfs_mounts:
     export: "/mnt/Slow/Multimedia/Movies"
     mount: "/mnt/movies"
     options: "rw,hard,intr,noatime"
-  - server: "{{ truenas_ip_addr }}"
-    export: "/mnt/Slow/Multimedia/Television"
-    mount: "/mnt/television"
-    options: "rw,hard,intr,noatime"
+  # - server: "{{ truenas_ip_addr }}"
+  #   export: "/mnt/Slow/Multimedia/Television"
+  #   mount: "/mnt/television"
+  #   options: "rw,hard,intr,noatime"
 
   - server: "{{ truenas_ip_addr }}"
     export: "/mnt/Slow/Multimedia/Audiobooks"
@@ -48,7 +48,17 @@ docker_nfs_mounts:
     export: "/mnt/Slow/Games"
     mount: "/mnt/games"
     options: "rw,hard,intr,noatime"
-  
+
+  - server: "{{ unraid_ip_addr }}"
+    export: "/mnt/user/TV\ Shows/"
+    mount: "/mnt/television"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ unraid_ip_addr }}"
+    export: "/mnt/user/appdata/"
+    mount: "/mnt/appdata"
+    options: "rw,hard,intr,noatime"
+ 
 
 
 
