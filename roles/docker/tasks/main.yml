@@ -62,6 +62,27 @@
     - docker-ce-cli
     - containerd.io
 
+- name: Ensure Docker daemon directory exists
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+- name: Configure Docker default address pools
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "default-address-pools": [
+          {
+            "base": "10.0.0.0/8",
+            "size": 16
+          }
+        ]
+      }
+    mode: '0644'
+  notify: restart docker
+
 - name: Install Docker Compose
   ansible.builtin.get_url:
     url: https://github.com/docker/compose/releases/download/v{{ docker_compose_version | default("2.25.0") }}/docker-compose-linux-x86_64
