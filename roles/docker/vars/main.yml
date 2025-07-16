@@ -49,6 +49,16 @@ docker_nfs_mounts:
     mount: "/mnt/games"
     options: "rw,hard,intr,noatime"
 
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Backups"
+    mount: "/mnt/backups"
+    options: "rw,hard,intr,noatime"
+
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Software"
+    mount: "/mnt/software"
+    options: "rw,hard,intr,noatime"
+
   - server: "{{ unraid_ip_addr }}"
     export: "/mnt/user/TV\ Shows/"
     mount: "/mnt/television"
