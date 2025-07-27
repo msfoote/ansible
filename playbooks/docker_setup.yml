@@ -2,7 +2,7 @@
 
 ---
 - name: Install Docker
-  hosts: docker_host
+  hosts: docker
   become: true
   roles:
     - docker
