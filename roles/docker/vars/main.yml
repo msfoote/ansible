@@ -7,10 +7,10 @@ docker_nfs_mounts:
     export: "/mnt/Slow/Multimedia/Movies"
     mount: "/mnt/movies"
     options: "rw,hard,intr,noatime"
-  # - server: "{{ truenas_ip_addr }}"
-  #   export: "/mnt/Slow/Multimedia/Television"
-  #   mount: "/mnt/television"
-  #   options: "rw,hard,intr,noatime"
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Slow/Multimedia/Television"
+    mount: "/mnt/television"
+    options: "rw,hard,intr,noatime"
 
   - server: "{{ truenas_ip_addr }}"
     export: "/mnt/Slow/Multimedia/Audiobooks"
@@ -34,7 +34,7 @@ docker_nfs_mounts:
     export: "/mnt/Slow/Downloads"
     mount: "/mnt/downloads"
     options: "rw,hard,intr,noatime"
-  
+
   - server: "{{ truenas_ip_addr }}"
     export: "/mnt/Slow/Documents"
     mount: "/mnt/documents"
@@ -61,15 +61,13 @@ docker_nfs_mounts:
 
   - server: "{{ unraid_ip_addr }}"
     export: "/mnt/user/TV\ Shows/"
-    mount: "/mnt/television"
+    mount: "/mnt/unraid_television"
     options: "rw,hard,intr,noatime"
 
   - server: "{{ unraid_ip_addr }}"
     export: "/mnt/user/appdata/"
     mount: "/mnt/appdata"
     options: "rw,hard,intr,noatime"
- 
-
 
 
 docker_git_repo_url: "https://{{ github_pat }}@github.com/msfoote/docker.git"
