@@ -59,6 +59,11 @@ docker_nfs_mounts:
     mount: "/mnt/software"
     options: "rw,hard,intr,noatime"
 
+  - server: "{{ truenas_ip_addr }}"
+    export: "/mnt/Medium/nextcloud"
+    mount: "/mnt/nextcloud"
+    options: "rw,hard,intr,noatime"
+
   - server: "{{ unraid_ip_addr }}"
     export: "/mnt/user/TV\ Shows/"
     mount: "/mnt/unraid_television"
