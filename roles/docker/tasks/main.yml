@@ -215,10 +215,10 @@
 
 # ... existing code ...
 
-- name: Set ownership of docker_env_dir to msfoote
-  ansible.builtin.file:
-    path: "{{ docker_env_dir | default('/opt/docker') }}"
-    owner: msfoote
-    group: msfoote
-    recurse: true
-  when: inventory_hostname == 'docker_host'
+# - name: Set ownership of docker_env_dir to msfoote
+#   ansible.builtin.file:
+#     path: "{{ docker_env_dir | default('/opt/docker') }}"
+#     owner: msfoote
+#     group: msfoote
+#     recurse: true
+#   when: inventory_hostname == 'docker_host'
