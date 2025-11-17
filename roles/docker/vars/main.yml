@@ -69,15 +69,15 @@ docker_nfs_mounts:
     mount: "/mnt/nextcloud"
     options: "rw,hard,intr,noatime"
 
-  - server: "{{ unraid_ip_addr }}"
-    export: "/mnt/user/TV\ Shows/"
-    mount: "/mnt/unraid_television"
-    options: "rw,hard,intr,noatime"
+  # - server: "{{ unraid_ip_addr }}"
+  #   export: "/mnt/user/TV\ Shows/"
+  #   mount: "/mnt/unraid_television"
+  #   options: "rw,hard,intr,noatime"
 
-  - server: "{{ unraid_ip_addr }}"
-    export: "/mnt/user/appdata/"
-    mount: "/mnt/appdata"
-    options: "rw,hard,intr,noatime"
+  # - server: "{{ unraid_ip_addr }}"
+  #   export: "/mnt/user/appdata/"
+  #   mount: "/mnt/appdata"
+  #   options: "rw,hard,intr,noatime"
 
 
 docker_git_repo_url: "https://{{ github_pat }}@github.com/msfoote/docker.git"

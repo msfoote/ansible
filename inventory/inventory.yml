@@ -70,6 +70,11 @@ all:
           ansible_user: msfoote
           ansible_ssh_private_key_file: ~/.ssh/msfoote_key
           tags: ['docker']
+        # hp2_docker_host:
+        #   ansible_host: 192.168.1.38
+        #   ansible_user: msfoote
+        #   ansible_ssh_private_key_file: ~/.ssh/msfoote_key
+        #   tags: ['docker']
         fatmandu_docker_host:
           ansible_host: 192.168.1.30
           ansible_user: msfoote
@@ -78,6 +83,7 @@ all:
 
     docker:
       hosts:
-        dockge:
+        # dockge:
         docker_host:
-        fatmandu_docker_host:
+        # hp2_docker_host:
+        # fatmandu_docker_host:
